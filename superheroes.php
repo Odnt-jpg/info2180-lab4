@@ -1,5 +1,5 @@
 <?php
-
+header("Access-Control-Allow-Origin: *");
 $superheroes = [
   [
       "id" => 1,
@@ -62,11 +62,17 @@ $superheroes = [
       "biography" => "Notably powerful, Wanda Maximoff has fought both against and with the Avengers, attempting to hone her abilities and do what she believes is right to help the world.",
   ], 
 ];
+$searchQuery = isset($_GET['query']) ? $_GET['query'] : '';
+
+$foundHeroes = [];
+foreach ($superheroes as $hero) {
+    if (stripos($hero['alias'], $searchQuery) !== false) {
+        $foundHeroes[] = $hero;
+    }
+}
+
+header('Content-Type: application/json');
+echo json_encode($foundHeroes);
 
 ?>
 
-<ul>
-<?php foreach ($superheroes as $superhero): ?>
-  <li><?= $superhero['alias']; ?></li>
-<?php endforeach; ?>
-</ul>
