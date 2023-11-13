@@ -5,7 +5,9 @@ document.addEventListener("DOMContentLoaded", function () {
     var searchtext = document.getElementById("search-input");
     var result = document.getElementById("result");
 
-    searchbtn.addEventListener("click", function () {
+    searchbtn.addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent the default form submission
+
         var xhr = new XMLHttpRequest();
 
         if (searchtext.value !== "") {
@@ -15,7 +17,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             };
         } else {
-            alert("Please type a name");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    displayDefault(xhr.responseText);
+                }
+            };
         }
 
         var url = "superheroes.php?query=" + encodeURIComponent(searchtext.value.trim());
@@ -24,6 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     function displayResult(response) {
+        alert(response)
         var data = JSON.parse(response);
         result.innerHTML = "";
 
@@ -36,5 +43,9 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             result.innerHTML = "Superhero not found";
         }
+    }
+
+    function displayDefault(response) {
+        result.innerHTML = response;
     }
 });
